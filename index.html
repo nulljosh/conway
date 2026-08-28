@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conway — the Game of Life, on every screen you own</title>
+<meta name="description" content="Conway's Game of Life for web, iPhone, iPad and Mac. Draw a pattern, press play, watch four rules do the rest. No accounts, no network, no ads.">
+<meta name="theme-color" content="#5B9BD5">
+<meta property="og:title" content="Conway — the Game of Life">
+<meta property="og:description" content="Draw a pattern, press play, watch four rules do the rest. Web, iOS and Mac.">
+<meta property="og:type" content="website">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root {
+  --accent: #5B9BD5;
+  --accent-soft: #eaf3fb;
+  --bg: #ffffff;
+  --bg2: #f7f7f8;
+  --text: #1c1d22;
+  --text2: #5c5f6a;
+  --border: #e6e7ea;
+  --font-body: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111111; --bg2: #1a1a1a; --text: #e8e8f0;
+    --text2: rgba(232,232,240,0.62); --border: rgba(232,232,240,0.12); --accent-soft: #151d26;
+  }
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--font-body);
+  line-height: 1.6; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.container { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--accent-soft); padding: 6rem 0 5rem; text-align: center;
+}
+.hero .container { position: relative; z-index: 2; }
+/* the hero background is a live board seeded with gliders — the product, running */
+#hero-canvas {
+  position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%;
+  opacity: 0.5; pointer-events: none;
+}
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at center, var(--accent-soft) 12%, transparent 72%);
+}
+h1 { font-size: clamp(2.2rem, 6vw, 3.2rem); line-height: 1.1; letter-spacing: -0.02em; }
+.tagline { color: var(--text2); font-size: 1.15rem; margin: 1rem auto 2rem; max-width: 30rem; }
+.cta { display: inline-flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+.btn {
+  display: inline-block; padding: 0.7rem 1.5rem; border-radius: 6px;
+  font-weight: 600; border: 1px solid var(--accent); background: var(--accent); color: #fff;
+}
+.btn:hover { text-decoration: none; opacity: 0.9; }
+.btn.ghost { background: transparent; color: var(--accent); }
+
+section { padding: 4rem 0; border-top: 1px solid var(--border); }
+h2 { font-size: 1.5rem; letter-spacing: -0.01em; margin-bottom: 1rem; }
+p + p { margin-top: 1rem; }
+.rules { list-style: none; margin-top: 1rem; }
+.rules li { padding: 0.6rem 0; border-bottom: 1px solid var(--border); color: var(--text2); }
+.rules li b { color: var(--text); }
+.grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 1.5rem; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+.card h3 { font-size: 1rem; margin-bottom: 0.35rem; }
+.card p { color: var(--text2); font-size: 0.95rem; }
+footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text2); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="container">
+    <h1>Conway</h1>
+    <p class="tagline">The Game of Life on every screen you own. Draw a pattern, press play, and let four rules do the rest.</p>
+    <div class="cta">
+      <a class="btn" href="play.html">Play in the browser</a>
+      <a class="btn ghost" href="#rules">How it works</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="rules" class="container">
+    <h2>Four rules, nothing else</h2>
+    <p>Every cell looks at its eight neighbours, and the whole board updates at once. That is the entire game — there is no scoring, no goal and no opponent.</p>
+    <ul class="rules">
+      <li><b>Underpopulation.</b> A live cell with fewer than two live neighbours dies.</li>
+      <li><b>Survival.</b> A live cell with two or three live neighbours lives on.</li>
+      <li><b>Overcrowding.</b> A live cell with more than three live neighbours dies.</li>
+      <li><b>Reproduction.</b> A dead cell with exactly three live neighbours comes alive.</li>
+    </ul>
+    <p>The board wraps at the edges, so a glider that walks off the right side comes back on the left.</p>
+  </section>
+
+  <section class="container">
+    <h2>Everywhere you are</h2>
+    <div class="grid">
+      <div class="card"><h3>Web</h3><p>Nothing to install. Tap cells to draw, drop in a Gosper gun, scrub the speed.</p></div>
+      <div class="card"><h3>iPhone &amp; iPad</h3><p>Drag a finger to paint cells, pinch-free full-screen board, native SwiftUI.</p></div>
+      <div class="card"><h3>Mac</h3><p>The same board in a resizable window, with a keyboard space bar for play and pause.</p></div>
+    </div>
+  </section>
+
+  <section class="container">
+    <h2>No accounts, no network</h2>
+    <p>Conway runs entirely on your device. There is no sign-in, no analytics and nothing to collect, because the game is a few hundred lines of arithmetic and never needs to talk to a server.</p>
+  </section>
+</main>
+
+<footer><div class="container">Conway · a Game of Life implementation · <a href="privacy.html">Privacy</a></div></footer>
+
+<script src="life.js"></script>
+<script>
+// Hero background: a large sparse board, seeded with gliders so there is always motion.
+(function () {
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  const CELL = 14;
+  let life, dpr;
+
+  function seed() {
+    const r = canvas.getBoundingClientRect();
+    dpr = window.devicePixelRatio || 1;
+    canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    life = new Life(Math.max(8, Math.ceil(r.width / CELL)), Math.max(8, Math.ceil(r.height / CELL)));
+    life.randomize(0.12);
+    for (let i = 0; i < 6; i++) {
+      life.stamp(PATTERNS.Glider,
+        Math.floor(Math.random() * life.cols), Math.floor(Math.random() * life.rows));
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('color');
+    ctx.globalAlpha = 0.35;
+    for (let y = 0; y < life.rows; y++)
+      for (let x = 0; x < life.cols; x++)
+        if (life.get(x, y)) ctx.fillRect(x * CELL, y * CELL, CELL - 2, CELL - 2);
+    ctx.globalAlpha = 1;
+  }
+
+  let last = 0;
+  function loop(t) {
+    if (t - last > 220) { life.step(); draw(); last = t; }
+    // a board that has settled is a dead hero: reseed it
+    if (life.generation > 600) seed();
+    requestAnimationFrame(loop);
+  }
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    seed(); draw(); requestAnimationFrame(loop);
+    addEventListener('resize', seed);
+  } else {
+    seed(); draw();
+  }
+})();
+</script>
+</body>
+</html>

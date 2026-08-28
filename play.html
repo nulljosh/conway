@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conway — play</title>
+<meta name="theme-color" content="#5B9BD5">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root {
+  --accent: #5B9BD5; --bg: #ffffff; --panel: #f5f5f5; --text: #1c1d22;
+  --muted: rgba(17,17,17,0.60); --border: #e6e7ea; --grid: rgba(17,17,17,0.08);
+  --font-body: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111111; --panel: #1a1a1a; --text: #e8e8f0;
+    --muted: rgba(232,232,240,0.60); --border: rgba(232,232,240,0.12); --grid: rgba(232,232,240,0.08);
+  }
+}
+* { box-sizing: border-box; margin: 0; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--font-body);
+  height: 100dvh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased;
+}
+.bar {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  padding: 0.65rem 1rem; background: var(--panel); border-bottom: 1px solid var(--border);
+}
+.bar a { color: var(--muted); text-decoration: none; font-weight: 600; margin-right: auto; }
+button, select {
+  font: inherit; font-size: 0.9rem; padding: 0.35rem 0.8rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.stat { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+input[type=range] { width: 110px; accent-color: var(--accent); }
+#board { flex: 1; width: 100%; display: block; touch-action: none; cursor: crosshair; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a href="index.html">← Conway</a>
+  <button id="play" class="primary">Play</button>
+  <button id="step">Step</button>
+  <button id="random">Random</button>
+  <button id="clear">Clear</button>
+  <select id="pattern"><option value="">Stamp a pattern…</option></select>
+  <input id="speed" type="range" min="1" max="60" value="12" title="Generations per second">
+  <span class="stat" id="stat">gen 0 · pop 0</span>
+</div>
+<canvas id="board"></canvas>
+
+<script src="life.js"></script>
+<script>
+const canvas = document.getElementById('board'), ctx = canvas.getContext('2d');
+const CELL = 16;
+let life, running = false, fps = 12, painting = null;
+
+function fit() {
+  const r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cols = Math.max(8, Math.floor(r.width / CELL)), rows = Math.max(8, Math.floor(r.height / CELL));
+  if (!life) { life = new Life(cols, rows); life.randomize(); }
+  else if (cols !== life.cols || rows !== life.rows) {
+    const old = life; life = new Life(cols, rows);
+    for (let y = 0; y < Math.min(rows, old.rows); y++)
+      for (let x = 0; x < Math.min(cols, old.cols); x++) life.set(x, y, old.get(x, y));
+    life.generation = old.generation;
+  }
+  draw();
+}
+
+function draw() {
+  const w = life.cols * CELL, h = life.rows * CELL;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid');
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = 0; x <= life.cols; x++) { ctx.moveTo(x * CELL + 0.5, 0); ctx.lineTo(x * CELL + 0.5, h); }
+  for (let y = 0; y <= life.rows; y++) { ctx.moveTo(0, y * CELL + 0.5); ctx.lineTo(w, y * CELL + 0.5); }
+  ctx.stroke();
+  ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--accent');
+  for (let y = 0; y < life.rows; y++)
+    for (let x = 0; x < life.cols; x++)
+      if (life.get(x, y)) ctx.fillRect(x * CELL + 1, y * CELL + 1, CELL - 2, CELL - 2);
+  document.getElementById('stat').textContent = `gen ${life.generation} · pop ${life.population()}`;
+}
+
+let last = 0;
+requestAnimationFrame(function loop(t) {
+  if (running && t - last > 1000 / fps) { life.step(); draw(); last = t; }
+  requestAnimationFrame(loop);
+});
+
+function cellAt(e) {
+  const r = canvas.getBoundingClientRect();
+  return [Math.floor((e.clientX - r.left) / CELL), Math.floor((e.clientY - r.top) / CELL)];
+}
+// drag paints one value the whole stroke, so a drag never flickers cells on and off
+canvas.addEventListener('pointerdown', e => {
+  const [x, y] = cellAt(e);
+  painting = life.get(x, y) ? 0 : 1;
+  life.set(x, y, painting); draw();
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', e => {
+  if (painting === null) return;
+  const [x, y] = cellAt(e); life.set(x, y, painting); draw();
+});
+addEventListener('pointerup', () => { painting = null; });
+
+const playBtn = document.getElementById('play');
+function setRunning(v) { running = v; playBtn.textContent = v ? 'Pause' : 'Play'; }
+playBtn.onclick = () => setRunning(!running);
+document.getElementById('step').onclick = () => { setRunning(false); life.step(); draw(); };
+document.getElementById('random').onclick = () => { life.randomize(); draw(); };
+document.getElementById('clear').onclick = () => { life.clear(); draw(); };
+document.getElementById('speed').oninput = e => { fps = +e.target.value; };
+
+const sel = document.getElementById('pattern');
+for (const name of Object.keys(PATTERNS)) sel.add(new Option(name, name));
+sel.onchange = () => {
+  if (!sel.value) return;
+  const p = PATTERNS[sel.value];
+  life.clear();
+  life.stamp(p, Math.floor((life.cols - p[0].length) / 2), Math.floor((life.rows - p.length) / 2));
+  draw(); sel.value = '';
+};
+addEventListener('keydown', e => {
+  if (e.key === ' ') { e.preventDefault(); setRunning(!running); }
+  if (e.key === 'ArrowRight') { setRunning(false); life.step(); draw(); }
+});
+addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+name: Conway
+options:
+  bundleIdPrefix: com.heyitsmejosh
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "202608280839"
+
+targets:
+  Conway:
+    type: application
+    platform: macOS
+    sources:
+      # Shared with iOS — Life and ContentView are platform-agnostic. Do not fork them.
+      - path: ../ios/Conway/Life.swift
+      - path: ../ios/Conway/ContentView.swift
+      - path: Conway/ConwayApp.swift
+      - path: Assets.xcassets
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heyitsmejosh.conway
+        INFOPLIST_FILE: Conway/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        DEVELOPMENT_TEAM: QMM486NPYC
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_ENTITLEMENTS: Conway.entitlements
+
+schemes:
+  Conway:
+    build:
+      targets:
+        Conway: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+    shared: true
