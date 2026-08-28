@@ -33,6 +33,10 @@ final class Board: ObservableObject {
         guard let p = pendingPattern else { return }
         pendingPattern = nil
         stamp(p)
+        // `-generations 300` runs the board forward before the first frame, so a
+        // screenshot can show a gun mid-stream rather than a near-empty grid.
+        let n = UserDefaults.standard.integer(forKey: "generations")
+        for _ in 0..<min(max(0, n), 5000) { life.step() }
     }
 
     deinit { timer?.invalidate() }
