@@ -4,11 +4,20 @@ import SwiftUI
 final class Board: ObservableObject {
     @Published var life = Life(cols: 40, rows: 40)
     @Published private(set) var running = false
-    @Published var speed: Double = 12 { didSet { if running { start() } } }
+    /// Generations per second. Clamped — a zero or NaN interval makes Timer spin or trap.
+    @Published var speed: Double = 12 {
+        didSet {
+            let clamped = speed.isFinite ? min(60, max(1, speed)) : 12
+            if clamped != speed { speed = clamped; return }
+            if running { start() }
+        }
+    }
 
     private var timer: Timer?
 
     init() { life.randomize() }
+
+    deinit { timer?.invalidate() }
 
     func toggleRun() { running ? stop() : start() }
 
@@ -108,8 +117,10 @@ struct ContentView: View {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
-                        let x = Int(value.location.x / cell), y = Int(value.location.y / cell)
-                        guard x >= 0, y >= 0, x < board.life.cols, y < board.life.rows else { return }
+                        let p = value.location
+                        guard p.x.isFinite, p.y.isFinite, p.x >= 0, p.y >= 0 else { return }
+                        let x = Int(p.x / cell), y = Int(p.y / cell)
+                        guard x < board.life.cols, y < board.life.rows else { return }
                         let paint = painting ?? !board.life[x, y]
                         painting = paint
                         board.life[x, y] = paint
@@ -122,6 +133,9 @@ struct ContentView: View {
     }
 
     private func resize(_ size: CGSize) {
+        // A collapsed or not-yet-laid-out view reports zero or NaN; Int(nan) traps.
+        guard size.width.isFinite, size.height.isFinite,
+              size.width > 0, size.height > 0 else { return }
         board.life.resized(cols: max(8, Int(size.width / cell)),
                            rows: max(8, Int(size.height / cell)))
     }

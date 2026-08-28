@@ -123,12 +123,16 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
 // Hero background: a large sparse board, seeded with gliders so there is always motion.
 (function () {
   const canvas = document.getElementById('hero-canvas');
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas && canvas.getContext ? canvas.getContext('2d') : null;
+  // The hero board is decoration. If anything about it fails, the page still reads fine
+  // without it, so bail quietly rather than breaking the rest of the scripts.
+  if (!ctx || typeof Life !== 'function') { if (canvas) canvas.style.display = 'none'; return; }
   const CELL = 14;
   let life, dpr;
 
   function seed() {
     const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return false;
     dpr = window.devicePixelRatio || 1;
     canvas.width = r.width * dpr; canvas.height = r.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -138,9 +142,11 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
       life.stamp(PATTERNS.Glider,
         Math.floor(Math.random() * life.cols), Math.floor(Math.random() * life.rows));
     }
+    return true;
   }
 
   function draw() {
+    if (!life) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('color');
     ctx.globalAlpha = 0.35;
@@ -152,17 +158,22 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
 
   let last = 0;
   function loop(t) {
+    if (!life) { requestAnimationFrame(loop); return; }
     if (t - last > 220) { life.step(); draw(); last = t; }
     // a board that has settled is a dead hero: reseed it
     if (life.generation > 600) seed();
     requestAnimationFrame(loop);
   }
 
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    seed(); draw(); requestAnimationFrame(loop);
-    addEventListener('resize', seed);
-  } else {
+  try {
     seed(); draw();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(loop);
+      addEventListener('resize', seed);
+    }
+  } catch (e) {
+    canvas.style.display = 'none';
+    console.error('Conway hero:', e);
   }
 })();
 </script>

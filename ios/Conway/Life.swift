@@ -32,7 +32,8 @@ struct Life: Equatable {
     }
 
     mutating func randomize(density: Double = 0.28) {
-        for i in cells.indices { cells[i] = Double.random(in: 0..<1) < density ? 1 : 0 }
+        let d = density.isFinite ? min(1, max(0, density)) : 0.28
+        for i in cells.indices { cells[i] = Double.random(in: 0..<1) < d ? 1 : 0 }
         generation = 0
     }
 
@@ -65,8 +66,9 @@ struct Life: Equatable {
 
     /// Resizes in place, keeping whatever still fits.
     mutating func resized(cols newCols: Int, rows newRows: Int) {
-        guard newCols != cols || newRows != rows else { return }
-        var fresh = Life(cols: newCols, rows: newRows)
+        let c = max(1, newCols), r = max(1, newRows)
+        guard c != cols || r != rows else { return }
+        var fresh = Life(cols: c, rows: r)
         for y in 0..<min(rows, fresh.rows) {
             for x in 0..<min(cols, fresh.cols) where self[x, y] {
                 fresh[x, y] = true

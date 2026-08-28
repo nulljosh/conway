@@ -1,6 +1,13 @@
 // Conway's Game of Life. Toroidal grid, flat Uint8Array, double-buffered.
 class Life {
   constructor(cols, rows) {
+    // A board with no cells has no rules to run, and a fractional or NaN size
+    // silently produces a zero-length array that every later index misses.
+    if (!Number.isFinite(cols) || !Number.isFinite(rows)) {
+      throw new RangeError(`Life: cols and rows must be finite, got ${cols}x${rows}`);
+    }
+    cols = Math.max(1, Math.floor(cols));
+    rows = Math.max(1, Math.floor(rows));
     this.cols = cols; this.rows = rows;
     this.cells = new Uint8Array(cols * rows);
     this.next = new Uint8Array(cols * rows);
@@ -15,6 +22,8 @@ class Life {
   toggle(x, y) { const i = this.idx(x, y); this.cells[i] = this.cells[i] ? 0 : 1; }
   clear() { this.cells.fill(0); this.generation = 0; }
   randomize(density = 0.28) {
+    if (!Number.isFinite(density)) density = 0.28;
+    density = Math.min(1, Math.max(0, density));
     for (let i = 0; i < this.cells.length; i++) this.cells[i] = Math.random() < density ? 1 : 0;
     this.generation = 0;
   }
@@ -38,10 +47,22 @@ class Life {
   }
   population() { let n = 0; for (const c of this.cells) n += c; return n; }
   // stamp a pattern given as an array of "..O" rows, top-left at (x, y)
-  stamp(rows, x, y) {
-    rows.forEach((row, dy) => [...row].forEach((ch, dx) => {
+  stamp(rows, x = 0, y = 0) {
+    if (!Array.isArray(rows)) throw new TypeError('Life.stamp: pattern must be an array of strings');
+    rows.forEach((row, dy) => [...String(row)].forEach((ch, dx) => {
       if (ch !== '.' && ch !== ' ') this.set(x + dx, y + dy, 1);
     }));
+  }
+
+  // Copies whatever still fits onto a new board. Used when the viewport resizes.
+  resized(cols, rows) {
+    if (cols === this.cols && rows === this.rows) return this;
+    const fresh = new Life(cols, rows);
+    for (let y = 0; y < Math.min(this.rows, fresh.rows); y++)
+      for (let x = 0; x < Math.min(this.cols, fresh.cols); x++)
+        fresh.set(x, y, this.get(x, y));
+    fresh.generation = this.generation;
+    return fresh;
   }
 }
 

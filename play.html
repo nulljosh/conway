@@ -54,26 +54,34 @@ input[type=range] { width: 110px; accent-color: var(--accent); }
 
 <script src="life.js"></script>
 <script>
-const canvas = document.getElementById('board'), ctx = canvas.getContext('2d');
+const canvas = document.getElementById('board');
+const ctx = canvas && canvas.getContext ? canvas.getContext('2d') : null;
 const CELL = 16;
 let life, running = false, fps = 12, painting = null;
+
+// Without a canvas or the engine there is no game to run; say so rather than
+// throwing on every frame behind a blank page.
+if (!ctx || typeof Life !== 'function') {
+  document.body.innerHTML =
+    '<p style="padding:2rem;font:inherit">This browser could not start the board. ' +
+    '<a href="index.html">Back to Conway</a></p>';
+  throw new Error('Conway: no 2d canvas context or life.js failed to load');
+}
 
 function fit() {
   const r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
   canvas.width = r.width * dpr; canvas.height = r.height * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // A hidden or zero-height canvas (rotation, a background tab) must not resize the board to nothing.
+  if (!r.width || !r.height) return;
   const cols = Math.max(8, Math.floor(r.width / CELL)), rows = Math.max(8, Math.floor(r.height / CELL));
   if (!life) { life = new Life(cols, rows); life.randomize(); }
-  else if (cols !== life.cols || rows !== life.rows) {
-    const old = life; life = new Life(cols, rows);
-    for (let y = 0; y < Math.min(rows, old.rows); y++)
-      for (let x = 0; x < Math.min(cols, old.cols); x++) life.set(x, y, old.get(x, y));
-    life.generation = old.generation;
-  }
+  else life = life.resized(cols, rows);
   draw();
 }
 
 function draw() {
+  if (!life) return;
   const w = life.cols * CELL, h = life.rows * CELL;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid');
@@ -97,18 +105,26 @@ requestAnimationFrame(function loop(t) {
 
 function cellAt(e) {
   const r = canvas.getBoundingClientRect();
-  return [Math.floor((e.clientX - r.left) / CELL), Math.floor((e.clientY - r.top) / CELL)];
+  const x = Math.floor((e.clientX - r.left) / CELL), y = Math.floor((e.clientY - r.top) / CELL);
+  // Pointer capture keeps sending moves after the pointer leaves the canvas — those
+  // would wrap to the far edge and paint a line across the board.
+  if (x < 0 || y < 0 || x >= life.cols || y >= life.rows) return null;
+  return [x, y];
 }
 // drag paints one value the whole stroke, so a drag never flickers cells on and off
 canvas.addEventListener('pointerdown', e => {
-  const [x, y] = cellAt(e);
+  const at = cellAt(e);
+  if (!at) return;
+  const [x, y] = at;
   painting = life.get(x, y) ? 0 : 1;
   life.set(x, y, painting); draw();
   canvas.setPointerCapture(e.pointerId);
 });
 canvas.addEventListener('pointermove', e => {
   if (painting === null) return;
-  const [x, y] = cellAt(e); life.set(x, y, painting); draw();
+  const at = cellAt(e);
+  if (!at) return;
+  life.set(at[0], at[1], painting); draw();
 });
 addEventListener('pointerup', () => { painting = null; });
 
@@ -126,7 +142,9 @@ sel.onchange = () => {
   if (!sel.value) return;
   const p = PATTERNS[sel.value];
   life.clear();
-  life.stamp(p, Math.floor((life.cols - p[0].length) / 2), Math.floor((life.rows - p.length) / 2));
+  // A pattern wider than the board would wrap onto itself; centre what fits and start at 0 otherwise.
+  life.stamp(p, Math.max(0, Math.floor((life.cols - p[0].length) / 2)),
+                Math.max(0, Math.floor((life.rows - p.length) / 2)));
   draw(); sel.value = '';
 };
 addEventListener('keydown', e => {
