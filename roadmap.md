@@ -9,15 +9,19 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
 - Bundle ID registered, ASC record created, both builds uploaded and VALID (202608280855)
 - iOS build attached to version 1.0; metadata, category (Games/Puzzle+Simulation),
   content rights, copyright, age rating all set
-- Screenshots captured: `screenshots/` — 4 iPhone 6.5", 4 iPad 13"
+- Screenshots captured AND uploaded: 4 iPhone 6.5", 4 iPad 13" (upload needs an
+  `en-US/` subdirectory under --path, not a flat folder)
+- App Store review details set (contact + reviewer notes, no demo account needed)
 
 ## Open
-- [ ] Upload screenshots — `asc screenshots upload` needs locale subdirectories:
-      stage as `<dir>/en-US/*.png`, then `--device-type IPHONE_65` / `IPAD_PRO_3GEN_129`
-      with `--app 6806324937 --version-id 4aba64d8-d4c3-46b0-8339-e10fb65f5322`
-- [ ] App Store review details (contact name/email/phone) — `asc review details-create`
-- [ ] App availability / territories — `asc web`, first-time bootstrap
-- [ ] App Privacy: publish DATA_NOT_COLLECTED *before* the version publish or it 409s
+- [ ] App availability / territories — the only remaining validate blocker.
+      `asc pricing availability create` rejects a partial list (it wanted EST when given
+      27 countries) and `asc pricing territories` takes no --limit/--paginate flag, so the
+      full ~175-territory list could not be assembled from the CLI. Either find the right
+      territories call or bootstrap availability once from the dashboard.
+- [ ] App Privacy: declaration is already DATA_NOT_COLLECTED but `published: false`.
+      `asc web privacy publish --app 6806324937` needs a flag it did not name — check its
+      FLAGS. Publish BEFORE the version publish or it 409s.
 - [ ] macOS platform on the same record — the Mac pkg is uploaded but the record is
       iOS-only (`--platform UNIVERSAL` 409s at creation). Add the platform, then attach
       build `db4fb66d-b26f-49ae-98fe-1b66ddab7b88`. Do NOT run `asc web apps create
