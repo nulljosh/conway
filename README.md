@@ -22,3 +22,7 @@ swiftc ios/Conway/Life.swift ios/Checks/main.swift -o /tmp/c && /tmp/c   # swift
 The grid is toroidal — patterns wrap at the edges. The engine is duplicated in JS and Swift
 because there is no shared runtime between the two; both are covered by the checks above, and
 `life.test.js` / `Checks/main.swift` assert the same four cases.
+
+## Architecture
+
+<img src="architecture.svg" width="600">
