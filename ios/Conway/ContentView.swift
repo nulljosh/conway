@@ -15,7 +15,25 @@ final class Board: ObservableObject {
 
     private var timer: Timer?
 
-    init() { life.randomize() }
+    /// Screenshot support: `-pattern "Gosper gun"` stamps a known figure instead of noise,
+    /// so App Store captures are reproducible. Applied after the first layout, otherwise
+    /// centring it against the placeholder board would put it off screen.
+    private var pendingPattern: Pattern?
+
+    init() {
+        if let name = UserDefaults.standard.string(forKey: "pattern"),
+           let p = Pattern.allCases.first(where: { $0.rawValue == name }) {
+            pendingPattern = p
+        } else {
+            life.randomize()
+        }
+    }
+
+    func applyPendingPattern() {
+        guard let p = pendingPattern else { return }
+        pendingPattern = nil
+        stamp(p)
+    }
 
     deinit { timer?.invalidate() }
 
@@ -65,28 +83,58 @@ struct ContentView: View {
     }
 
     private var controls: some View {
-        HStack(spacing: 12) {
-            Button(board.running ? "Pause" : "Play") { board.toggleRun() }
-                .keyboardShortcut(.space, modifiers: [])
-                .buttonStyle(.borderedProminent)
-            Button("Step") { board.step() }
-            Button("Random") { board.randomize() }
-            Button("Clear") { board.clear() }
-            Menu("Patterns") {
-                ForEach(Pattern.allCases) { p in
-                    Button(p.rawValue) { board.stamp(p) }
-                }
+        VStack(spacing: 8) {
+            #if os(macOS)
+            HStack(spacing: 12) {
+                buttons
+                speedSlider
+                Spacer()
+                stat
             }
-            .fixedSize()
-            Slider(value: $board.speed, in: 1...60).frame(width: 110)
-            Spacer()
-            Text("gen \(board.life.generation) · pop \(board.life.population)")
-                .font(.caption.monospacedDigit())
-                .foregroundStyle(.secondary)
+            #else
+            HStack(spacing: 8) { buttons }
+            HStack(spacing: 12) {
+                speedSlider
+                Spacer()
+                stat
+            }
+            #endif
         }
         .buttonStyle(.bordered)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
+    }
+
+    @ViewBuilder
+    private var buttons: some View {
+        Button(board.running ? "Pause" : "Play") { board.toggleRun() }
+            .keyboardShortcut(.space, modifiers: [])
+            .buttonStyle(.borderedProminent)
+        Button("Step") { board.step() }
+        Button("Random") { board.randomize() }
+        Button("Clear") { board.clear() }
+        Menu("Patterns") {
+            ForEach(Pattern.allCases) { p in
+                Button(p.rawValue) { board.stamp(p) }
+            }
+        }
+        // Every label here is short; without this the row shrinks them to nothing
+        // rather than shrinking itself.
+        .fixedSize()
+    }
+
+    private var speedSlider: some View {
+        Slider(value: $board.speed, in: 1...60)
+            .frame(maxWidth: 160)
+            .accessibilityLabel("Generations per second")
+    }
+
+    private var stat: some View {
+        Text("gen \(board.life.generation) · pop \(board.life.population)")
+            .font(.caption.monospacedDigit())
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .fixedSize()
     }
 
     private var grid: some View {
@@ -127,7 +175,7 @@ struct ContentView: View {
                     }
                     .onEnded { _ in painting = nil }
             )
-            .onAppear { resize(geo.size) }
+            .onAppear { resize(geo.size); board.applyPendingPattern() }
             .onChange(of: geo.size) { _, new in resize(new) }
         }
     }
