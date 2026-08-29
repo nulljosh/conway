@@ -14,11 +14,18 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
 - App Store review details set (contact + reviewer notes, no demo account needed)
 
 ## Open
-- [ ] App availability / territories — the only remaining validate blocker.
-      `asc pricing availability create` rejects a partial list (it wanted EST when given
-      27 countries) and `asc pricing territories` takes no --limit/--paginate flag, so the
-      full ~175-territory list could not be assembled from the CLI. Either find the right
-      territories call or bootstrap availability once from the dashboard.
+- [x] App availability / territories — **DONE 2026-08-29 from the CLI, no dashboard, no 2FA.**
+      The blocker was a wrong flag name, not a missing capability: `asc pricing territories
+      list` *does* paginate, it just takes `--limit` (it caps at 50 by default, which is why
+      the list came back short and `create` then rejected it as partial). With
+      `--limit 200` the full 175 come back, and
+      `asc pricing availability create --app 6806324937 --territory "<all 175>"
+      --available true --available-in-new-territories true` succeeded first try.
+      Verified: 175/175 available, and `asc validate` is now **0 errors, 0 blocking**.
+- [ ] `availableInNewTerritories` cannot be *changed* afterwards from the public API
+      (`edit` refuses: "the public API cannot change this setting"). It is only settable at
+      `create` time, so get it right on the first bootstrap — flipping it later is genuinely
+      dashboard-only. Not a problem here; it was set true at creation.
 - [ ] App Privacy: declaration is already DATA_NOT_COLLECTED but `published: false`.
       `asc web privacy publish --app 6806324937` needs a flag it did not name — check its
       FLAGS. Publish BEFORE the version publish or it 409s.
@@ -26,6 +33,8 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
       iOS-only (`--platform UNIVERSAL` 409s at creation). Add the platform, then attach
       build `db4fb66d-b26f-49ae-98fe-1b66ddab7b88`. Do NOT run `asc web apps create
       --platform MAC_OS` — that makes a second record.
-- [ ] `asc validate --app 6806324937 --version 1.0 --platform IOS` until clean
+- [x] `asc validate --app 6806324937 --version 1.0 --platform IOS` — clean 2026-08-29
+      (0 errors, 0 warnings, 0 blocking). Only an info row remains: App Privacy publish
+      state is not verifiable through the public API, which is the item above.
 - [ ] Submit — deliberately held: the 4.3(a) wave is active with three appeals filed
       2026-08-28, and a seventh thin record entering review now risks those appeals.
