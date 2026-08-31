@@ -1,5 +1,7 @@
 # Conway
 
+**Live:** https://conway.heyitsmejosh.com
+
 Conway's Game of Life for web, iOS and macOS. No accounts, no network, no storage.
 
 | Surface | Where |
