@@ -35,11 +35,21 @@ class Life {
     return n;
   }
   step() {
-    const { cols, rows } = this;
+    const { cols, rows, cells, next } = this;
+    // Row/column wrap is resolved once per row and once per column instead of
+    // through idx()'s two modulos on each of the 8 neighbour reads.
     for (let y = 0; y < rows; y++) {
+      const up = (y === 0 ? rows - 1 : y - 1) * cols;
+      const mid = y * cols;
+      const dn = (y === rows - 1 ? 0 : y + 1) * cols;
       for (let x = 0; x < cols; x++) {
-        const i = y * cols + x, n = this.neighbors(x, y);
-        this.next[i] = this.cells[i] ? (n === 2 || n === 3 ? 1 : 0) : (n === 3 ? 1 : 0);
+        const l = x === 0 ? cols - 1 : x - 1;
+        const r = x === cols - 1 ? 0 : x + 1;
+        const n = cells[up + l] + cells[up + x] + cells[up + r]
+                + cells[mid + l] + cells[mid + r]
+                + cells[dn + l] + cells[dn + x] + cells[dn + r];
+        const i = mid + x;
+        next[i] = cells[i] ? (n === 2 || n === 3 ? 1 : 0) : (n === 3 ? 1 : 0);
       }
     }
     [this.cells, this.next] = [this.next, this.cells];
