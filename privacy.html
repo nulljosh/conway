@@ -6,11 +6,13 @@
 <title>Conway — Privacy</title>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
-:root { --bg:#fff; --text:#1c1d22; --muted:#5c5f6a; --accent:#5B9BD5; }
-@media (prefers-color-scheme: dark) { :root { --bg:#111; --text:#e8e8f0; --muted:rgba(232,232,240,0.62); } }
+:root { --bg:#fff; --text:#1c1d22; --muted:#5c5f6a; --accent:#5B9BD5;
+  --link: #4779a6; }
+@media (prefers-color-scheme: dark) { :root { --bg:#111;
+    --link: #5B9BD5; --text:#e8e8f0; --muted:rgba(232,232,240,0.62); } }
 body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   line-height:1.6; max-width:38rem; margin:0 auto; padding:3rem 1.5rem; }
-a { color:var(--accent); } h1 { letter-spacing:-0.02em; } p { margin:1rem 0; color:var(--muted); }
+a { color: var(--link, var(--accent)); } h1 { letter-spacing:-0.02em; } p { margin:1rem 0; color:var(--muted); }
 </style>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#5B9BD5">
