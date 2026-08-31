@@ -12,11 +12,16 @@ body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkM
   line-height:1.6; max-width:38rem; margin:0 auto; padding:3rem 1.5rem; }
 a { color:var(--accent); } h1 { letter-spacing:-0.02em; } p { margin:1rem 0; color:var(--muted); }
 </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#5B9BD5">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
 <h1>Privacy</h1>
 <p>Conway collects nothing. The app and the website run entirely on your device, have no accounts, no analytics and no servers to talk to. Whatever you draw on the board stays in the browser tab or the app and is gone when you close it.</p>
 <p>Questions: <a href="mailto:trommatic@icloud.com">trommatic@icloud.com</a></p>
 <p><a href="index.html">← Conway</a></p>
+  <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));</script>
 </body>
 </html>
