@@ -7,6 +7,7 @@ struct ConwayApp: App {
             ContentView()
             .shareApp("https://conway.heyitsmejosh.com")
         }
+        .defaultSize(width: 1440, height: 900)
         .commands { CommandGroup(replacing: .newItem) {} }
     }
 }

@@ -1,13 +1,13 @@
 <img src="icon.svg" width="80" style="border-radius:18px">
 
-# Conway
+# Toroid
 
 ![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) [![GitHub](https://img.shields.io/badge/GitHub-nulljosh%2Fconway-black?logo=github)](https://github.com/nulljosh/conway)
 
 
 **Live:** https://conway.heyitsmejosh.com
 
-Conway's Game of Life. Web, iOS and macOS.
+Toroid is Conway's Game of Life on a wrapping board. Web, iOS and macOS. App Store name is Toroid; the repo, bundle and domain keep the conway name.
 
 No accounts. No network. No storage. Just the rules, and a grid that wraps.
 

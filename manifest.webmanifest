@@ -1,6 +1,6 @@
 {
-  "name": "Conway",
-  "short_name": "Conway",
+  "name": "Toroid",
+  "short_name": "Toroid",
   "description": "Conway's Game of Life.",
   "start_url": "/",
   "scope": "/",

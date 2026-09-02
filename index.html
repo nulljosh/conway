@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conway — the Game of Life, on every screen you own</title>
+<title>Toroid — the Game of Life, on every screen you own</title>
 <meta name="description" content="Conway's Game of Life for web, iPhone, iPad and Mac. Draw a pattern, press play, watch four rules do the rest. No accounts, no network, no ads.">
 <meta name="theme-color" content="#5B9BD5">
-<meta property="og:title" content="Conway — the Game of Life">
+<meta property="og:title" content="Toroid — the Game of Life">
 <meta property="og:description" content="Draw a pattern, press play, watch four rules do the rest. Web, iOS and Mac.">
 <meta property="og:type" content="website">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -74,6 +74,10 @@ p + p { margin-top: 1rem; }
 .card h3 { font-size: 1rem; margin-bottom: 0.35rem; }
 .card p { color: var(--text2); font-size: 0.95rem; }
 footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text2); font-size: 0.9rem; }
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;align-items:start}
+.shots figure{margin:0}
+.shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid rgba(0,0,0,.08)}
+.shots figcaption{margin-top:8px;font-size:.9rem;opacity:.7}
 </style>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icon-192.png">
@@ -84,7 +88,7 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
 <header class="hero">
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
   <div class="container">
-    <h1>Conway</h1>
+    <h1>Toroid</h1>
     <p class="tagline">The Game of Life on every screen you own. Draw a pattern, press play, and let four rules do the rest.</p>
     <div class="cta">
       <a class="btn" href="play.html">Play in the browser</a>
@@ -116,8 +120,18 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
   </section>
 
   <section class="container">
+    <h2>What it looks like</h2>
+    <div class="shots">
+      <figure><img src="screenshots/mac-gun.png" alt="Toroid on Mac, a Gosper gun firing gliders" loading="lazy"><figcaption>Mac. A Gosper gun, 300 generations in.</figcaption></figure>
+      <figure><img src="screenshots/mac-chaos.png" alt="Toroid on Mac, an R-pentomino after 400 generations" loading="lazy"><figcaption>Mac. An R-pentomino, 400 generations in.</figcaption></figure>
+      <figure><img src="screenshots/ipad13-pulsar.png" alt="Toroid on iPad, a pulsar" loading="lazy"><figcaption>iPad. A pulsar.</figcaption></figure>
+      <figure><img src="screenshots/iphone65-gun.png" alt="Toroid on iPhone, a Gosper gun" loading="lazy"><figcaption>iPhone. A Gosper gun.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="container">
     <h2>No accounts, no network</h2>
-    <p>Conway runs entirely on your device. There is no sign-in, no analytics and nothing to collect, because the game is a few hundred lines of arithmetic and never needs to talk to a server.</p>
+    <p>Toroid runs entirely on your device. There is no sign-in, no analytics and nothing to collect, because the game is a few hundred lines of arithmetic and never needs to talk to a server.</p>
   </section>
 </main>
 
@@ -174,7 +188,7 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
   </div>
 </section>
 
-<footer><div class="container">Conway · a Game of Life implementation · <a href="privacy.html">Privacy</a></div></footer>
+<footer><div class="container">Toroid · a Game of Life implementation · <a href="privacy.html">Privacy</a></div></footer>
 
 <script src="life.js"></script>
 <script>
@@ -231,7 +245,7 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
     }
   } catch (e) {
     canvas.style.display = 'none';
-    console.error('Conway hero:', e);
+    console.error('Toroid hero:', e);
   }
 })();
 </script>
