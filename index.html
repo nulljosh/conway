@@ -11,23 +11,8 @@
 <meta property="og:type" content="website">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
-:root {
-  --accent: #5B9BD5;
-  --link: #42719b;
-  --accent-soft: #eaf3fb;
-  --bg: #ffffff;
-  --bg2: #f7f7f8;
-  --text: #1c1d22;
-  --text2: #5c5f6a;
-  --border: #e6e7ea;
-  --font-body: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111111;
-    --link: #5B9BD5; --bg2: #1a1a1a; --text: #e8e8f0;
-    --text2: rgba(232,232,240,0.62); --border: rgba(232,232,240,0.12); --accent-soft: #151d26;
-  }
+@import url("https://heyitsmejosh.com/tokens.css");
+:root{--link:var(--bulb-deep);--accent-soft:var(--bg2);}
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
