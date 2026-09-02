@@ -3,3 +3,41 @@
 # Conway
 
 ![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) [![GitHub](https://img.shields.io/badge/GitHub-nulljosh%2Fconway-black?logo=github)](https://github.com/nulljosh/conway)
+
+
+**Live:** https://conway.heyitsmejosh.com
+
+Conway's Game of Life for web, iOS and macOS. No accounts, no network, no storage.
+
+| Surface | Where |
+|---------|-------|
+| Web | `index.html` (landing, live board behind the hero) + `play.html` |
+| Engine (web) | `life.js` — `node life.test.js` verifies the rules |
+| iOS | `ios/` — xcodegen, SwiftUI |
+| macOS | `macos/` — same sources, `../ios/Conway/Life.swift` + `ContentView.swift` |
+| Engine (Swift) | `ios/Conway/Life.swift` |
+
+## Build
+
+```sh
+node life.test.js                                    # web engine check
+swiftc ios/Conway/Life.swift ios/Checks/main.swift -o /tmp/c && /tmp/c   # swift engine check
+(cd ios && xcodegen generate && xcodebuild -scheme Conway -destination 'generic/platform=iOS Simulator' build)
+(cd macos && xcodegen generate && xcodebuild -scheme Conway build)
+```
+
+The grid is toroidal — patterns wrap at the edges. The engine is duplicated in JS and Swift
+because there is no shared runtime between the two; both are covered by the checks above, and
+`life.test.js` / `Checks/main.swift` assert the same four cases.
+
+## Architecture
+
+<img src="architecture.svg" width="600">
+
+## Step performance
+
+`step()` resolves toroidal wrap once per row and once per column rather than
+calling `idx()` — two modulos — on each of the eight neighbour reads. The rule
+itself is unchanged, including the degenerate 1×n and n×1 boards where a cell
+is its own neighbour. On a 400×400 board, 200 generations went from 600 ms to
+136 ms (4.4×), which is what keeps a full-viewport grid at 60 fps.
