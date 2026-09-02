@@ -16,14 +16,20 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
   (`asc versions create --platform MAC_OS` on the existing app id, does NOT make a second record)
 - `availableInNewTerritories`: settable only at `create` time, was set true. Not an issue.
 
+- Pricing set Free (USA base) 2026-09-02; it was the second submit blocker alongside App Privacy.
+- macOS screenshots uploaded 2026-09-02 (4 x 1440x900, DESKTOP set). Headless recipe: Debug build,
+  `open -n App.app --args -pattern "Gosper gun" -generations 300`, find the window id with a
+  10-line Swift CGWindowListCopyWindowInfo script, `screencapture -x -o -l <id>`. Window size is
+  pinned by `.defaultSize(1440x900)` on the scene (autosave keys embed a per-launch address).
+- Display name is Toroid on both platforms (Info.plist), landing page + manifest + GitHub repo
+  (nulljosh/toroid) renamed 2026-09-02. Bundle id, dir, Pages project and subdomain keep `conway`.
+- New builds 202609020728 uploaded for iOS and macOS 2026-09-02; attach once VALID.
+
 ## Open
-- [ ] macOS screenshots, the only blocking `asc validate` error on the Mac version
-      (`screenshots.required.any`). Needs 1280x800/1440x900 captures of the real Mac app;
-      no headless way found (no pyobjc for window ids, System Events is off-limits).
-- [ ] App Privacy publish. The missing flag was `--confirm`:
-      `asc web privacy publish --app 6806324937 --confirm`
-      Blocked only on an Apple 2FA code (pass `ASC_WEB_2FA_CODE_COMMAND='echo <code>'`).
-      Run it BEFORE the version publish or it 409s.
-- [ ] Submit, still deliberately held: the 4.3(a) wave is active with three appeals filed
-      2026-08-28, and a seventh thin record entering review now risks those appeals.
-      Revisit once the appeals land.
+- [ ] Attach build 202609020728 to both 1.0 versions once processed (`asc versions attach-build`).
+- [ ] App Privacy publish, the LAST blocker. Needs a live web session (2FA code from Joshua):
+      `asc web auth login --apple-id trommatic@icloud.com` with `ASC_WEB_2FA_CODE_COMMAND='echo <code>'`,
+      then `asc web privacy publish --app 6806324937 --confirm`, then
+      `asc review submit --app 6806324937 --version-id <id> --platform IOS|MAC_OS --build-id <id> --confirm`.
+      Stray draft submission b6ad4067-0b93-4a29-a00e-921822296445 exists from the 2026-09-02 attempt; it is reused when safe.
+- [ ] 4.3(a) wave hold was lifted by Joshua 2026-09-02 ("ship it"); submit both platforms as soon as privacy is published.
