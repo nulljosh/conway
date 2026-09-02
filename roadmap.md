@@ -26,7 +26,7 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
 - New builds 202609020728 uploaded for iOS and macOS 2026-09-02; attach once VALID.
 
 ## Open
-- [ ] Attach build 202609020728 to both 1.0 versions once processed (`asc versions attach-build`).
+- [x] Build 202609020728 attached to both 1.0 versions (iOS 2fb43827…, macOS f11e043f…), validate clean
 - [ ] App Privacy publish, the LAST blocker. Needs a live web session (2FA code from Joshua):
       `asc web auth login --apple-id trommatic@icloud.com` with `ASC_WEB_2FA_CODE_COMMAND='echo <code>'`,
       then `asc web privacy publish --app 6806324937 --confirm`, then
