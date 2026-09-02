@@ -26,10 +26,6 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
 - New builds 202609020728 uploaded for iOS and macOS 2026-09-02; attach once VALID.
 
 ## Open
-- [x] Build 202609020728 attached to both 1.0 versions (iOS 2fb43827…, macOS f11e043f…), validate clean
-- [ ] App Privacy publish, the LAST blocker. Needs a live web session (2FA code from Joshua):
-      `asc web auth login --apple-id trommatic@icloud.com` with `ASC_WEB_2FA_CODE_COMMAND='echo <code>'`,
-      then `asc web privacy publish --app 6806324937 --confirm`, then
-      `asc review submit --app 6806324937 --version-id <id> --platform IOS|MAC_OS --build-id <id> --confirm`.
-      Stray draft submission b6ad4067-0b93-4a29-a00e-921822296445 exists from the 2026-09-02 attempt; it is reused when safe.
-- [ ] 4.3(a) wave hold was lifted by Joshua 2026-09-02 ("ship it"); submit both platforms as soon as privacy is published.
+- [ ] Wait for review. SUBMITTED 2026-09-02 14:34 UTC: iOS submission b6ad4067-0b93-4a29-a00e-921822296445,
+      macOS submission d9c65adb-b487-48a3-a247-f586f5c55e8d. App Privacy published (DATA_NOT_COLLECTED;
+      `apply` had to run before `publish`, else 409 APP_DATA_USAGES_REQUIRED).
