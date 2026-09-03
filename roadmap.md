@@ -40,11 +40,13 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
   network, no token pairing — needs a machine with full Xcode for the first real build/run.
 
 ## Open
-- [ ] Wait for review. SUBMITTED 2026-09-02 14:34 UTC: iOS submission b6ad4067-0b93-4a29-a00e-921822296445,
-      macOS submission d9c65adb-b487-48a3-a247-f586f5c55e8d. App Privacy published (DATA_NOT_COLLECTED;
-      `apply` had to run before `publish`, else 409 APP_DATA_USAGES_REQUIRED).
+- [ ] Wait for review. iOS submission b6ad4067-0b93-4a29-a00e-921822296445 (WAITING_FOR_REVIEW).
+      macOS submission d9c65adb-b487-48a3-a247-f586f5c55e8d was REJECTED 1:58 PM PT; reason Guideline 4:
+      no way to reopen window after closing. Fixed by adding NSApplicationDelegate to quit app when last
+      window closes (standard macOS behavior, reopens via dock/Cmd+Tab). Resubmitted build 202609021900
+      2026-09-02 evening (WAITING_FOR_REVIEW).
 
 ## 2026-09-02 — macOS 1.0 REJECTED (submission d9c65adb)
 - ASC email 1:58 PM: "issue with your Toroid (macOS) submission". API state REJECTED / UNRESOLVED_ISSUES; iOS still in review.
-- Reason UNREAD: `asc web review show` fails (Apple signin 503, same as Sidewise all week) and Chrome ASC session is logged out.
-- Next: log into appstoreconnect.apple.com in Chrome (or wait for `asc web` login to recover), read Resolution Center, fix, resubmit macOS only.
+- Reason: Guideline 4 — no way to reopen the main window after closing it. Added NSApplicationDelegate quit-on-close handler.
+- Fixed 2026-09-02 evening, resubmitted build 202609021900 (commit 8ee9634).
