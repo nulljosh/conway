@@ -12,6 +12,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 @import url("https://heyitsmejosh.com/tokens.css");
+@import url("devices.css");
 :root{--accent:#5B9BD5;--link:#4779a6;--accent-soft:var(--bg2);}
 @media (prefers-color-scheme: dark){:root{--link:#5B9BD5;}}
 }
@@ -62,7 +63,9 @@ p + p { margin-top: 1rem; }
 footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text2); font-size: 0.9rem; }
 .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;align-items:start}
 .shots figure{margin:0}
-.shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid rgba(0,0,0,.08)}
+.shots .device{--device-w:100%;margin:0 auto}
+.shots .device-iphone,.shots .device-android{--device-w:240px}
+.shots figure:has(.device-iphone){display:flex;flex-direction:column;align-items:center}
 .shots figcaption{margin-top:8px;font-size:.9rem;opacity:.7}
 </style>
   <link rel="manifest" href="/manifest.webmanifest">
@@ -108,10 +111,10 @@ footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--text
   <section class="container">
     <h2>What it looks like</h2>
     <div class="shots">
-      <figure><img src="screenshots/mac-gun.png" alt="Toroid on Mac, a Gosper gun firing gliders" loading="lazy"><figcaption>Mac. A Gosper gun, 300 generations in.</figcaption></figure>
-      <figure><img src="screenshots/mac-chaos.png" alt="Toroid on Mac, an R-pentomino after 400 generations" loading="lazy"><figcaption>Mac. An R-pentomino, 400 generations in.</figcaption></figure>
-      <figure><img src="screenshots/ipad13-pulsar.png" alt="Toroid on iPad, a pulsar" loading="lazy"><figcaption>iPad. A pulsar.</figcaption></figure>
-      <figure><img src="screenshots/iphone65-gun.png" alt="Toroid on iPhone, a Gosper gun" loading="lazy"><figcaption>iPhone. A Gosper gun.</figcaption></figure>
+      <figure><div class="device device-mac has-chrome"><div class="device-screen"><img src="screenshots/mac-gun.png" alt="Toroid on Mac, a Gosper gun firing gliders" loading="lazy"></div></div><figcaption>Mac. A Gosper gun, 300 generations in.</figcaption></figure>
+      <figure><div class="device device-mac has-chrome"><div class="device-screen"><img src="screenshots/mac-chaos.png" alt="Toroid on Mac, an R-pentomino after 400 generations" loading="lazy"></div></div><figcaption>Mac. An R-pentomino, 400 generations in.</figcaption></figure>
+      <figure><div class="device device-ipad"><div class="device-screen"><img src="screenshots/ipad13-pulsar.png" alt="Toroid on iPad, a pulsar" loading="lazy"></div></div><figcaption>iPad. A pulsar.</figcaption></figure>
+      <figure><div class="device device-iphone"><div class="device-screen"><img src="screenshots/iphone65-gun.png" alt="Toroid on iPhone, a Gosper gun" loading="lazy"></div></div><figcaption>iPhone. A Gosper gun.</figcaption></figure>
     </div>
   </section>
 
