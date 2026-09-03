@@ -33,9 +33,13 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
   `marketingUrl`/`supportUrl`/`privacyPolicyUrl` in `metadata/` to the new domain.
   `conway.heyitsmejosh.com` still points straight at the Pages project (old links keep working) — ASC
   metadata not pushed live yet since iOS/macOS are mid-review.
+- Apple Watch companion app 2026-09-02: standalone watchOS target (`watchos/`, XcodeGen), same
+  pattern as talli/watchos, sparkjar/watchos, curvely/watchos, charwork/watchos. Fully local
+  port of the toroidal engine (`Models/Life.swift`) to a 12x12 grid, SwiftUI Canvas, tap to
+  toggle cells, play/pause/step/randomize/clear. Bundle `com.heyitsmejosh.conway.watchos`. No
+  network, no token pairing — needs a machine with full Xcode for the first real build/run.
 
 ## Open
-- [ ] Apple Watch companion app -- standalone watchOS target (XcodeGen), same pattern as talli/watchos, sparkjar/watchos, epiphany/watchos, and the new companions in bookrank/charwork/curvely/fengshui/inkpress/lexly/quotestreak. Deferred 2026-09-02 to keep the sweep scoped; pick network+token-pairing, App-Group share, or a fully local port depending on what the app actually is.
 - [ ] Wait for review. SUBMITTED 2026-09-02 14:34 UTC: iOS submission b6ad4067-0b93-4a29-a00e-921822296445,
       macOS submission d9c65adb-b487-48a3-a247-f586f5c55e8d. App Privacy published (DATA_NOT_COLLECTED;
       `apply` had to run before `publish`, else 409 APP_DATA_USAGES_REQUIRED).

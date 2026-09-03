@@ -7,7 +7,7 @@
 
 **Live:** https://toroid.heyitsmejosh.com
 
-Toroid is Conway's Game of Life on a wrapping board. Web, iOS and macOS. App Store name and domain are Toroid; the bundle id keeps the conway name.
+Toroid is Conway's Game of Life on a wrapping board. Web, iOS, macOS, and a standalone watchOS companion. App Store name and domain are Toroid; the bundle id keeps the conway name.
 
 No accounts. No network. No storage. Just the rules, and a grid that wraps.
 
@@ -17,6 +17,7 @@ No accounts. No network. No storage. Just the rules, and a grid that wraps.
 | Engine (web) | `life.js`. `node life.test.js` checks the rules |
 | iOS | `ios/`, xcodegen, SwiftUI |
 | macOS | `macos/`, same sources: `../ios/Conway/Life.swift` and `ContentView.swift` |
+| watchOS | `watchos/`, xcodegen, standalone — own 12x12 port of the engine, fully local |
 | Engine (Swift) | `ios/Conway/Life.swift` |
 
 ## Build
@@ -26,6 +27,7 @@ node life.test.js                                    # web engine check
 swiftc ios/Conway/Life.swift ios/Checks/main.swift -o /tmp/c && /tmp/c   # swift engine check
 (cd ios && xcodegen generate && xcodebuild -scheme Conway -destination 'generic/platform=iOS Simulator' build)
 (cd macos && xcodegen generate && xcodebuild -scheme Conway build)
+(cd watchos && xcodegen generate && xcodebuild -scheme ToroidWatch -destination 'generic/platform=watchOS' build)
 ```
 
 The grid is a torus. Patterns wrap at the edges. The engine exists twice, once in JS and once
