@@ -14,7 +14,7 @@ final class Board: ObservableObject {
     /// Generations per second. Clamped — a zero or NaN interval makes Timer spin or trap.
     private let speed: Double = 6
 
-    private var timer: Timer?
+    private nonisolated(unsafe) var timer: Timer?
 
     init() {
         life.randomize()
