@@ -2,12 +2,12 @@
 
 # Toroid
 
-![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) [![GitHub](https://img.shields.io/badge/GitHub-nulljosh%2Fconway-black?logo=github)](https://github.com/nulljosh/conway)
+![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) [![GitHub](https://img.shields.io/badge/GitHub-nulljosh%2Ftoroid-black?logo=github)](https://github.com/nulljosh/toroid)
 
 
-**Live:** https://conway.heyitsmejosh.com
+**Live:** https://toroid.heyitsmejosh.com
 
-Toroid is Conway's Game of Life on a wrapping board. Web, iOS and macOS. App Store name is Toroid; the repo, bundle and domain keep the conway name.
+Toroid is Conway's Game of Life on a wrapping board. Web, iOS and macOS. App Store name and domain are Toroid; the bundle id keeps the conway name.
 
 No accounts. No network. No storage. Just the rules, and a grid that wraps.
 
@@ -31,6 +31,14 @@ swiftc ios/Conway/Life.swift ios/Checks/main.swift -o /tmp/c && /tmp/c   # swift
 The grid is a torus. Patterns wrap at the edges. The engine exists twice, once in JS and once
 in Swift, because a browser and SwiftUI share no runtime. Both are held to the same four
 cases in `life.test.js` and `Checks/main.swift`. If one drifts, one fails.
+
+## Screenshots
+
+<p>
+<img src="screenshots/mac-gun.png" width="270" alt="Toroid on Mac, a Gosper gun firing gliders">
+<img src="screenshots/ipad13-pulsar.png" width="270" alt="Toroid on iPad, a pulsar">
+<img src="screenshots/iphone65-gun.png" width="180" alt="Toroid on iPhone, a Gosper gun">
+</p>
 
 ## Architecture
 

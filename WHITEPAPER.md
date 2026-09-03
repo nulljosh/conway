@@ -4,7 +4,7 @@
 
 Conway is Conway's Game of Life on a toroidal grid, for web, iOS and macOS.
 No accounts, no network, no storage. Live at
-[conway.heyitsmejosh.com](https://conway.heyitsmejosh.com).
+[toroid.heyitsmejosh.com](https://toroid.heyitsmejosh.com).
 
 ## Engine
 
