@@ -35,6 +35,7 @@ bundle `com.heyitsmejosh.conway`, profiles "Toroid AppStore" / "Toroid Mac AppSt
   metadata not pushed live yet since iOS/macOS are mid-review.
 
 ## Open
+- [ ] Apple Watch companion app -- standalone watchOS target (XcodeGen), same pattern as talli/watchos, sparkjar/watchos, epiphany/watchos, and the new companions in bookrank/charwork/curvely/fengshui/inkpress/lexly/quotestreak. Deferred 2026-09-02 to keep the sweep scoped; pick network+token-pairing, App-Group share, or a fully local port depending on what the app actually is.
 - [ ] Wait for review. SUBMITTED 2026-09-02 14:34 UTC: iOS submission b6ad4067-0b93-4a29-a00e-921822296445,
       macOS submission d9c65adb-b487-48a3-a247-f586f5c55e8d. App Privacy published (DATA_NOT_COLLECTED;
       `apply` had to run before `publish`, else 409 APP_DATA_USAGES_REQUIRED).
